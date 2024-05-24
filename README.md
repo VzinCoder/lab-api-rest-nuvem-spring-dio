@@ -65,5 +65,6 @@ User <|-- Admin
 ReserveStatus --> Reserve:status
 
 Client "1" --*"0..*" Reserve
+Employee "1" --*"0..*" Reserve
 Room "1"--*"0..*" Reserve
 ```
