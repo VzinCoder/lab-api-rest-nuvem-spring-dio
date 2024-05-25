@@ -26,7 +26,7 @@ public class CustomExceptionHandler {
     @ExceptionHandler({ DataIntegrityException.class })
     public ResponseEntity<MessageResponseDTO> handleDataIntegrityException(RuntimeException ex, WebRequest request) {
         MessageResponseDTO responseDTO = new MessageResponseDTO(ex.getMessage());
-        return new ResponseEntity<>(responseDTO, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(responseDTO, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
