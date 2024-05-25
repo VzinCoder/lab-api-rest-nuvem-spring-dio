@@ -53,7 +53,7 @@ classDiagram
         - double price
         - LocalDate dateCheckIn
         - LocalDate dateCheckOut
-        - StatusReserve status
+        - ReserveStatus status
     }
 
 
