@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vzincoder.api.domain.Admin;
+import com.vzincoder.api.dto.AdminCreateDTO;
 import com.vzincoder.api.dto.AdminDTO;
 import com.vzincoder.api.exception.DataIntegrityException;
 import com.vzincoder.api.exception.EntityNotFoundException;
@@ -28,6 +29,16 @@ public class AdminService {
         return convertToDTO(adminFound.get());
     }
 
+    public AdminDTO getAdminByEmail(String email) {
+        Optional<Admin> adminFound = adminRepository.findByEmail(email);
+
+        if (adminFound.isEmpty()) {
+            throw new EntityNotFoundException("admin not afound");
+        }
+
+        return convertToDTO(adminFound.get());
+    }
+
     public List<AdminDTO> getAllAdmin() {
         List<Admin> adminList = adminRepository.findAll();
 
@@ -38,10 +49,10 @@ public class AdminService {
         return adminDTOList;
     }
 
-    public AdminDTO createAdmin(Admin admin) {
+    public AdminDTO createAdmin(AdminCreateDTO admin) {
         try {
-            Admin adminCreated = adminRepository.save(admin);
-            return convertToDTO(adminCreated);
+            Admin newAdmin = convertAdminCreateDTOToAdmin(admin);
+            return convertToDTO(adminRepository.save(newAdmin));
         } catch (Exception e) {
             throw new DataIntegrityException("This email is already being used!");
         }
@@ -64,20 +75,19 @@ public class AdminService {
             throw new EntityNotFoundException("Admin not found");
         }
 
-        Admin existingAdmin = adminFound.get();
+        try {
+            Admin existingAdmin = adminFound.get();
 
-        Optional<Admin> adminWithNewEmail = adminRepository.findByEmail(admin.getEmail());
+            existingAdmin.setEmail(admin.getEmail());
+            existingAdmin.setPassword(admin.getPassword());
 
-        if (adminWithNewEmail.isPresent() && adminWithNewEmail.get().getId() != admin.getId()) {
+            Admin updatedAdmin = adminRepository.save(existingAdmin);
+            return convertToDTO(updatedAdmin);
+
+        } catch (Exception e) {
             throw new DataIntegrityException("Email is already being used by another admin");
         }
 
-        existingAdmin.setEmail(admin.getEmail());
-        existingAdmin.setPassword(admin.getPassword());
-
-        Admin updatedAdmin = adminRepository.save(existingAdmin);
-
-        return convertToDTO(updatedAdmin);
     }
 
     private AdminDTO convertToDTO(Admin admin) {
@@ -86,6 +96,13 @@ public class AdminService {
         adminDTO.setEmail(admin.getEmail());
         adminDTO.setPassword(admin.getPassword());
         return adminDTO;
+    }
+
+    private Admin convertAdminCreateDTOToAdmin(AdminCreateDTO adminCreateDTO){
+        Admin admin = new Admin();
+        admin.setEmail(adminCreateDTO.getEmail());
+        admin.setPassword(adminCreateDTO.getPassword());
+        return admin;
     }
 
 }
