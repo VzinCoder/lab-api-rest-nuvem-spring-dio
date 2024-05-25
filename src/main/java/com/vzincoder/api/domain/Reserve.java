@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 
 
 @Entity
@@ -21,23 +22,30 @@ public class Reserve {
 
     @ManyToOne
     @JoinColumn(name="client_id")
+    @NotNull
     private Client client;
 
     @ManyToOne
     @JoinColumn(name="employee_id")
+    @NotNull
     private Employee employee;
 
     @ManyToOne
     @JoinColumn(name ="room_id")
+    @NotNull
     private Room room;
 
+    @NotNull
     private double price;
 
+    @NotNull
     private LocalDate dateCheckIn;
 
+    @NotNull
     private LocalDate dateCheckOut;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     private ReserveStatus status;
 
     public int getId() {

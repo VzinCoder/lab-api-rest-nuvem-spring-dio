@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Client {
@@ -15,13 +17,15 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    @NotNull
+    @Size(min = 3)
     private String name;
 
-    @Column(unique = true,length = 11)
+    @Column(unique = true, length = 11, nullable = false)
     private String cpf;
 
+    @NotNull
     private LocalDate dateOfBirth;
-
 
     public int getId() {
         return id;
@@ -54,5 +58,5 @@ public class Client {
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
-    
+
 }

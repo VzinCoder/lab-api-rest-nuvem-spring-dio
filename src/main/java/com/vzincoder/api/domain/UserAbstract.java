@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @MappedSuperclass
 public abstract class UserAbstract {
@@ -14,8 +16,12 @@ public abstract class UserAbstract {
     private int id;
 
     @Column(unique = true)
+    @NotNull
+    @Size(min=11)
     private String email;
-
+    
+    @NotNull
+    @Size(min=8)
     private String password;
 
     public int getId() {

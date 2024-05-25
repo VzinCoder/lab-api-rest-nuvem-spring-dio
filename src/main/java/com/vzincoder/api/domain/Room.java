@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"number","floor"}))
@@ -14,11 +15,17 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    @NotNull
     private int number;
+    @NotNull
     private int floor;
+    @NotNull
     private int qty_bed;
+    @NotNull
     private int qty_bathroom;
+    @NotNull
     private double priceDay;
+    @NotNull
     private String describe;
 
     public int getId() {
