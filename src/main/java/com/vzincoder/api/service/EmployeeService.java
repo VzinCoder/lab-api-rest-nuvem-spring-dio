@@ -20,43 +20,37 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
 
     public EmployeeDTO getEmployeeById(int id) {
-        Optional<Employee> employeeFound = employeeRepository.findById(id);
+        Optional<EmployeeDTO> employeeFound = employeeRepository.findById(id);
 
         if (employeeFound.isEmpty()) {
             throw new EntityNotFoundException("employee not afound");
         }
 
-        return convertToDTO(employeeFound.get());
+        return employeeFound.get();
     }
 
     public EmployeeDTO getEmployeeByEmail(String email) {
-        Optional<Employee> employeeFound = employeeRepository.findByEmail(email);
+        Optional<EmployeeDTO> employeeFound = employeeRepository.findByEmail(email);
 
         if (employeeFound.isEmpty()) {
             throw new EntityNotFoundException("employee not afound");
         }
 
-        return convertToDTO(employeeFound.get());
+        return employeeFound.get();
     }
 
     public EmployeeDTO getEmployeeByCpf(String Cpf) {
-        Optional<Employee> employeeFound = employeeRepository.findByCpf(Cpf);
+        Optional<EmployeeDTO> employeeFound = employeeRepository.findByCpf(Cpf);
 
         if (employeeFound.isEmpty()) {
             throw new EntityNotFoundException("employee not afound");
         }
 
-        return convertToDTO(employeeFound.get());
+        return employeeFound.get();
     }
 
     public List<EmployeeDTO> getAllEmployee() {
-        List<Employee> employeeList = employeeRepository.findAll();
-
-        List<EmployeeDTO> employeeDTOList = employeeList.stream()
-                .map(this::convertToDTO)
-                .toList();
-
-        return employeeDTOList;
+        return employeeRepository.findAllEmployees();
     }
 
     public EmployeeDTO createEmployee(EmployeeCreateDTO employee) {
@@ -77,33 +71,33 @@ public class EmployeeService {
     }
 
     public void deleteEmployeeById(int id) {
-        Optional<Employee> employeeFound = employeeRepository.findById(id);
+        Optional<EmployeeDTO> employeeFound = employeeRepository.findById(id);
 
         if (employeeFound.isEmpty()) {
             throw new EntityNotFoundException("employee not afound");
         }
 
-        employeeRepository.delete(employeeFound.get());
+        employeeRepository.delete(convertEmployeeDTOToEmployee(employeeFound.get()));
     }
 
     public void deleteEmployeeByCpf(String cpf) {
-        Optional<Employee> employeeFound = employeeRepository.findByCpf(cpf);
+        Optional<EmployeeDTO> employeeFound = employeeRepository.findByCpf(cpf);
 
         if (employeeFound.isEmpty()) {
             throw new EntityNotFoundException("employee not afound");
         }
 
-        employeeRepository.delete(employeeFound.get());
+        employeeRepository.delete(convertEmployeeDTOToEmployee(employeeFound.get()));
     }
 
     public EmployeeDTO updateEmployee(Employee employee) {
-        Optional<Employee> employeeFound = employeeRepository.findById(employee.getId());
+        Optional<EmployeeDTO> employeeFound = employeeRepository.findById(employee.getId());
     
         if (employeeFound.isEmpty()) {
             throw new EntityNotFoundException("Employee not found");
         }
     
-        Employee existingEmployee = employeeFound.get();
+        EmployeeDTO existingEmployee = employeeFound.get();
 
         if (!existingEmployee.getEmail().equals(employee.getEmail()) &&
                 employeeRepository.existsByEmail(employee.getEmail())) {
@@ -116,13 +110,7 @@ public class EmployeeService {
         }
     
         try {
-            existingEmployee.setCpf(employee.getCpf());
-            existingEmployee.setEmail(employee.getEmail());
-            existingEmployee.setPassword(employee.getPassword());
-            existingEmployee.setName(employee.getName());
-            existingEmployee.setSalary(employee.getSalary());
-    
-            Employee updatedEmployee = employeeRepository.save(existingEmployee);
+            Employee updatedEmployee = employeeRepository.save(employee);
             return convertToDTO(updatedEmployee);
     
         } catch (Exception e) {
@@ -139,6 +127,17 @@ public class EmployeeService {
         employeeDTO.setName(employee.getName());
         employeeDTO.setSalary(employee.getSalary());
         return employeeDTO;
+    }
+
+    private Employee convertEmployeeDTOToEmployee(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        employee.setId(employeeDTO.getId());
+        employee.setEmail(employeeDTO.getEmail());
+        employee.setPassword(employeeDTO.getPassword());
+        employee.setCpf(employeeDTO.getCpf());
+        employee.setName(employeeDTO.getName());
+        employee.setSalary(employeeDTO.getSalary());
+        return employee;
     }
 
     private Employee convertEmployeeCreateDTOToEmployee(EmployeeCreateDTO employeeCreateDTO) {
