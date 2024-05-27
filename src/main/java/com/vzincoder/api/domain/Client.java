@@ -21,7 +21,8 @@ public class Client {
     @Size(min = 3)
     private String name;
 
-    @Column(unique = true, length = 11, nullable = false)
+    @NotNull
+    @Column(unique = true, length = 11)
     private String cpf;
 
     @NotNull

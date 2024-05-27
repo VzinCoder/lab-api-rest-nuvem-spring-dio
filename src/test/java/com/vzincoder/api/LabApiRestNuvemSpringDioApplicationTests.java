@@ -8,6 +8,7 @@ class LabApiRestNuvemSpringDioApplicationTests {
 
 	@Test
 	void contextLoads() {
+		
 	}
 
 }
