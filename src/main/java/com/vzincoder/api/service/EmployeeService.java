@@ -69,7 +69,7 @@ public class EmployeeService {
         }
     
         try {
-            Employee newEmployee = convertEmployeeCreateDTOToAdmin(employee);
+            Employee newEmployee = convertEmployeeCreateDTOToEmployee(employee);
             return convertToDTO(employeeRepository.save(newEmployee));
         } catch (Exception e) {
             throw new DataIntegrityException("Failed to create employee");
@@ -129,7 +129,6 @@ public class EmployeeService {
             throw new DataIntegrityException("Failed to update employee");
         }
     }
-    
 
     private EmployeeDTO convertToDTO(Employee employee) {
         EmployeeDTO employeeDTO = new EmployeeDTO();
@@ -142,7 +141,7 @@ public class EmployeeService {
         return employeeDTO;
     }
 
-    private Employee convertEmployeeCreateDTOToAdmin(EmployeeCreateDTO employeeCreateDTO) {
+    private Employee convertEmployeeCreateDTOToEmployee(EmployeeCreateDTO employeeCreateDTO) {
         Employee employee = new Employee();
         employee.setCpf(employeeCreateDTO.getCpf());
         employee.setEmail(employeeCreateDTO.getEmail());
