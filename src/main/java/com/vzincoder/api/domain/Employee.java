@@ -1,7 +1,11 @@
 package com.vzincoder.api.domain;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -18,6 +22,9 @@ public class Employee extends UserAbstract {
 
     @NotNull
     private double salary;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Reserve> reserves;
 
     public String getName() {
         return name;
@@ -43,4 +50,13 @@ public class Employee extends UserAbstract {
         this.salary = salary;
     }
 
+    public List<Reserve> getReserves() {
+        return reserves;
+    }
+
+    public void setReserves(List<Reserve> reserves) {
+        this.reserves = reserves;
+    }
+
+    
 }
