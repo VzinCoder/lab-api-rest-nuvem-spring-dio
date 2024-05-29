@@ -27,6 +27,7 @@ classDiagram
         - String name
         - String cpf
         - double salary
+        - LocalDate date
      }
 
     class Client {
