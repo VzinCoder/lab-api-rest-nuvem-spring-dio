@@ -1,6 +1,7 @@
 package com.vzincoder.api.service;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,21 +23,74 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    public EmployeeDTO getEmployeeByCpfAndMonthAndYear(String cpf, int month, int year) {
-        Optional<Employee> employeeFound = employeeRepository.findByCpfAndMonthAndYear(cpf, month, year);
+    public EmployeeDTO getEmployeeById(int id) {
+        Optional<Employee> employeeFound = employeeRepository.findById(id);
 
         if (employeeFound.isEmpty()) {
-            throw new EntityNotFoundException("Employee not found for the specified month and year");
+            throw new EntityNotFoundException("Employee not found");
+        }
+
+        LocalDate currentDate = LocalDate.now();
+        return convertToDTO(employeeFound.get(), currentDate.getMonthValue(), currentDate.getYear());
+    }
+
+    public EmployeeDTO getEmployeeByCpf(String cpf) {
+        Optional<Employee> employeeFound = employeeRepository.findByCpf(cpf);
+
+        if (employeeFound.isEmpty()) {
+            throw new EntityNotFoundException("Employee not found");
+        }
+
+        LocalDate currentDate = LocalDate.now();
+        return convertToDTO(employeeFound.get(), currentDate.getMonthValue(), currentDate.getYear());
+    }
+
+    public EmployeeDTO getEmployeeByCpfAndMonthAndYear(String cpf, int month, int year) {
+        Optional<Employee> employeeFound = employeeRepository.findByCpf(cpf);
+
+        if (employeeFound.isEmpty()) {
+            throw new EntityNotFoundException("Employee not found");
+        }
+
+        Employee employee = employeeFound.get();
+        LocalDate employeeStartDate = employee.getDate();
+
+        YearMonth currentYearMonth = YearMonth.now();
+        YearMonth requestedYearMonth = YearMonth.of(year, month);
+
+        if (requestedYearMonth.isAfter(currentYearMonth)) {
+            throw new EntityNotFoundException("Cannot search for employee in future months");
+        }
+
+        YearMonth employeeStartYearMonth = YearMonth.of(employeeStartDate.getYear(), employeeStartDate.getMonth());
+        if (requestedYearMonth.isBefore(employeeStartYearMonth)) {
+            throw new EntityNotFoundException("Employee was not employed in the specified month and year");
         }
 
         return convertToDTO(employeeFound.get(), month, year);
     }
 
-    public List<EmployeeDTO> getAllEmployeesByMonthAndYear(int month, int year) {
-        List<Employee> employees = employeeRepository.findAllByMonthAndYear(month, year);
+    public List<EmployeeDTO> getAllEmployeeByMonthAndYear(int month, int year) {
+        List<Employee> employeesList = employeeRepository.findAll();
 
-        return employees.stream()
-                .map(employee -> convertToDTO(employee, month, year))
+        YearMonth currentYearMonth = YearMonth.now();
+        YearMonth requestedYearMonth = YearMonth.of(year, month);
+
+        if (requestedYearMonth.isAfter(currentYearMonth)) {
+            throw new EntityNotFoundException("Cannot search for employee in future months");
+        }
+
+        return employeesList.stream().filter(employee -> {
+            LocalDate employeeStartDate = employee.getDate();
+            YearMonth employeeStartYearMonth = YearMonth.of(employeeStartDate.getYear(), employeeStartDate.getMonth());
+            return requestedYearMonth.equals(employeeStartYearMonth) || requestedYearMonth.isAfter(employeeStartYearMonth);
+        }).map(employee -> convertToDTO(employee, month, year)).toList();
+    }
+
+    public List<EmployeeDTO> getAllEmployee() {
+        LocalDate currentDate = LocalDate.now();
+        return employeeRepository.findAll().stream()
+                .map(employee -> convertToDTO(employee, currentDate.getMonthValue(), currentDate.getYear()))
                 .toList();
     }
 
@@ -55,6 +109,7 @@ public class EmployeeService {
             return convertToDTO(employeeRepository.save(newEmployee), currentDate.getMonthValue(),
                     currentDate.getYear());
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw new DataIntegrityException("Failed to create employee");
         }
     }
@@ -79,6 +134,7 @@ public class EmployeeService {
         employeeRepository.delete(employeeFound.get());
     }
 
+
     public EmployeeDTO updateEmployee(Employee employee) {
         Optional<Employee> employeeFound = employeeRepository.findById(employee.getId());
 
@@ -99,12 +155,18 @@ public class EmployeeService {
         }
 
         try {
-
-            Employee updatedEmployee = employeeRepository.save(employee);
+            existingEmployee.setCpf(employee.getCpf());
+            existingEmployee.setEmail(employee.getEmail());
+            existingEmployee.setName(employee.getName());
+            existingEmployee.setSalary(employee.getSalary());
+            existingEmployee.setPassword(employee.getPassword());
+            Employee updatedEmployee = employeeRepository.save(existingEmployee);
+            
             LocalDate currentDate = LocalDate.now();
             return convertToDTO(updatedEmployee, currentDate.getMonthValue(), currentDate.getYear());
 
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw new DataIntegrityException("Failed to update employee");
         }
     }
@@ -116,6 +178,7 @@ public class EmployeeService {
         employeeDTO.setCpf(employee.getCpf());
         employeeDTO.setName(employee.getName());
         employeeDTO.setSalary(employee.getSalary());
+        employeeDTO.setDate(employee.getDate());
 
         List<Reserve> reserveCheckedMonthList = employee.getReserves().stream().filter(reserve -> {
             boolean isReserveChekedOut = reserve.getStatus().equals(ReserveStatus.CHECKED_OUT);
@@ -138,7 +201,6 @@ public class EmployeeService {
 
         return employeeDTO;
     }
-
 
     private Employee convertEmployeeCreateDTOToEmployee(EmployeeCreateDTO employeeCreateDTO) {
         Employee employee = new Employee();

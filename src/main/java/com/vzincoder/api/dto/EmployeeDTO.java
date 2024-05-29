@@ -1,5 +1,6 @@
 package com.vzincoder.api.dto;
 
+import java.time.LocalDate;
 
 public class EmployeeDTO {
 
@@ -11,6 +12,7 @@ public class EmployeeDTO {
     private double bonus;
     private double total;
     private int qtyReserve;
+    private LocalDate date;
 
 
     public double getBonus() {
@@ -75,6 +77,14 @@ public class EmployeeDTO {
 
     public void setQtyReserve(int qtyReserve) {
         this.qtyReserve = qtyReserve;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
 }

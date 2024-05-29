@@ -1,11 +1,14 @@
 package com.vzincoder.api.domain;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -23,9 +26,16 @@ public class Employee extends UserAbstract {
     @NotNull
     private double salary;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Reserve> reserves;
+    @NotNull
+    private LocalDate date;
 
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Reserve> reserves = new ArrayList<>();
+
+    public LocalDate getDate() {
+        return date;
+    }
+   
     public String getName() {
         return name;
     }
@@ -58,5 +68,17 @@ public class Employee extends UserAbstract {
         this.reserves = reserves;
     }
 
+    @PrePersist
+    protected void onCreate() {
+        date = LocalDate.now();
+    }
+
+    @Override
+    public String toString() {
+        return "Employee [name=" + name + ", cpf=" + cpf + ", salary=" + salary + ", date=" + date + ", reserves="
+                + reserves + "]";
+    }
+
     
+
 }
