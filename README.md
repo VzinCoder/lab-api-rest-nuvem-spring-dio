@@ -13,6 +13,7 @@ classDiagram
         - int qty_bed
         - int qty_bathroom
         - double priceDay
+        - boolean dateDefined
         - String describe
     }
 
@@ -40,8 +41,7 @@ classDiagram
 
    class  ReserveStatus {
         <<Enum>>
-        CHECKED_IN
-        CHECKED_OUT
+        FINALIZED
         RESERVED
         CANCELED
     }
