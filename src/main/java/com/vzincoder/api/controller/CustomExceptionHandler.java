@@ -12,6 +12,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import com.vzincoder.api.dto.MessageResponseDTO;
 import com.vzincoder.api.exception.DataIntegrityException;
+import com.vzincoder.api.exception.DateInvalid;
 import com.vzincoder.api.exception.EntityNotFoundException;
 
 @ControllerAdvice
@@ -22,6 +23,13 @@ public class CustomExceptionHandler {
         MessageResponseDTO responseDTO = new MessageResponseDTO(ex.getMessage());
         return new ResponseEntity<>(responseDTO, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler({ DateInvalid.class })
+    public ResponseEntity<MessageResponseDTO> handleDateInvalidException(RuntimeException ex, WebRequest request) {
+        MessageResponseDTO responseDTO = new MessageResponseDTO(ex.getMessage());
+        return new ResponseEntity<>(responseDTO, HttpStatus.NOT_FOUND);
+    }
+
 
     @ExceptionHandler({ DataIntegrityException.class })
     public ResponseEntity<MessageResponseDTO> handleDataIntegrityException(RuntimeException ex, WebRequest request) {
