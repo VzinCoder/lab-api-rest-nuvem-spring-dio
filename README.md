@@ -13,7 +13,6 @@ classDiagram
         - int qty_bed
         - int qty_bathroom
         - double priceDay
-        - boolean dateDefined
         - String describe
     }
 
