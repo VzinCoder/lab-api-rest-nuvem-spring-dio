@@ -27,7 +27,13 @@ public class CustomExceptionHandler {
     @ExceptionHandler({ DateInvalid.class })
     public ResponseEntity<MessageResponseDTO> handleDateInvalidException(RuntimeException ex, WebRequest request) {
         MessageResponseDTO responseDTO = new MessageResponseDTO(ex.getMessage());
-        return new ResponseEntity<>(responseDTO, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(responseDTO, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({ IllegalStateException.class })
+    public ResponseEntity<MessageResponseDTO> handleIllegalStateException(RuntimeException ex, WebRequest request) {
+        MessageResponseDTO responseDTO = new MessageResponseDTO(ex.getMessage());
+        return new ResponseEntity<>(responseDTO,HttpStatus.BAD_REQUEST);
     }
 
 

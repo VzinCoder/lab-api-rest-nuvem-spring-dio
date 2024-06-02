@@ -138,6 +138,40 @@ public class ReserveService {
         return convertToDto(reserveRepository.save(updatedReserve));
     }
 
+    public ReserveDTO cancelReserve(int id) {
+        Optional<Reserve> reserveOptional = reserveRepository.findById(id);
+
+        if (reserveOptional.isEmpty()) {
+            throw new EntityNotFoundException("Reserve not afound");
+        }
+
+        Reserve reserve = reserveOptional.get();
+
+        if (reserve.getStatus() != ReserveStatus.RESERVED) {
+            throw new IllegalStateException("Cannot cancel reserve because it is not currently in RESERVED status");
+        }
+
+        reserve.setStatus(ReserveStatus.CANCELED);
+        return convertToDto(reserveRepository.save(reserve));
+    }
+
+    public ReserveDTO finalizeReserve(int id) {
+        Optional<Reserve> reserveOptional = reserveRepository.findById(id);
+
+        if (reserveOptional.isEmpty()) {
+            throw new EntityNotFoundException("Reserve not afound");
+        }
+
+        Reserve reserve = reserveOptional.get();
+
+        if (reserve.getStatus() != ReserveStatus.RESERVED) {
+            throw new IllegalStateException("Cannot cancel reserve because it is not currently in RESERVED status");
+        }
+
+        reserve.setStatus(ReserveStatus.FINALIZED);
+        return convertToDto(reserveRepository.save(reserve));
+    }
+
     private boolean checkDateValid(int idRoom, LocalDate dateCheckIn, LocalDate dateCheckout) {
 
         List<Reserve> reserve = reserveRepository.findByRoomAndStatusAndDateCheckInAndDateCheckOut(idRoom,

@@ -18,6 +18,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -59,6 +60,16 @@ public class ReserveController {
     @PutMapping("/{id}")
     public ResponseEntity<ReserveDTO> updateReserve(@PathVariable int id,@Valid @RequestBody ReserveCreateDTO reserveCreateDTO){
         return ResponseEntity.ok(reserveService.updaReserve(id, reserveCreateDTO));
+    }
+
+    @PatchMapping("/cancel/{id}")
+    public ResponseEntity<ReserveDTO> cancelReserve(@PathVariable int id){
+        return ResponseEntity.ok(reserveService.cancelReserve(id));
+    }
+
+    @PatchMapping("/finalize/{id}")
+    public ResponseEntity<ReserveDTO> finalizeReserve(@PathVariable int id){
+        return ResponseEntity.ok(reserveService.finalizeReserve(id));
     }
 
     @DeleteMapping("/{id}")
