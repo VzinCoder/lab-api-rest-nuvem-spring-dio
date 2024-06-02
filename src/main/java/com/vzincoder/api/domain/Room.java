@@ -25,6 +25,7 @@ public class Room {
     private int qty_bathroom;
     @NotNull
     private double priceDay;
+    
     @NotNull
     private String describe;
 
@@ -83,8 +84,5 @@ public class Room {
     public void setDescribe(String describe) {
         this.describe = describe;
     }
-
-    
-
 
 }

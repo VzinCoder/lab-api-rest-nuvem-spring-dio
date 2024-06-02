@@ -1,5 +1,6 @@
 package com.vzincoder.api.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,7 +10,9 @@ import org.springframework.stereotype.Service;
 import com.vzincoder.api.domain.Room;
 import com.vzincoder.api.dto.RoomCreateDTO;
 import com.vzincoder.api.dto.RoomDTO;
+import com.vzincoder.api.dto.RoomReservationRequest;
 import com.vzincoder.api.exception.DataIntegrityException;
+import com.vzincoder.api.exception.DateInvalid;
 import com.vzincoder.api.exception.EntityNotFoundException;
 import com.vzincoder.api.repository.RoomRepository;
 
@@ -48,6 +51,17 @@ public class RoomService {
     public List<RoomDTO> getBedroomsFloor(int floor) {
         List<Room> bedrooms = roomRepository.findByFloor(floor);
         return bedrooms.stream().map(this::convertToDTO).toList();
+    }
+
+    public List<RoomDTO> getRoomsAvaible(RoomReservationRequest roomReservationRequest){
+        LocalDate dateCheckIn = roomReservationRequest.getCheckInDate();
+        LocalDate dateCheckOut = roomReservationRequest.getCheckOutDate();
+
+        if(dateCheckOut.isBefore(dateCheckIn)){
+            throw new DateInvalid("date check-out invalid");
+        }
+
+        return roomRepository.findAllRoomsAvailable(dateCheckIn, dateCheckOut).stream().map(this::convertToDTO).toList();
     }
 
     public RoomDTO createRoom(RoomCreateDTO roomCreateDTO) {

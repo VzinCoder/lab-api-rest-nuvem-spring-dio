@@ -41,7 +41,6 @@ public class Reserve {
     @NotNull
     private LocalDate dateCheckIn;
 
-    @NotNull
     private LocalDate dateCheckOut;
 
     @Enumerated(EnumType.STRING)

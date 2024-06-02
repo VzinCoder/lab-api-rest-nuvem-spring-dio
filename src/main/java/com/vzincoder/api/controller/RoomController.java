@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.vzincoder.api.dto.RoomCreateDTO;
 import com.vzincoder.api.dto.RoomDTO;
+import com.vzincoder.api.dto.RoomReservationRequest;
 import com.vzincoder.api.dto.MessageResponseDTO;
 import com.vzincoder.api.service.RoomService;
 
@@ -34,6 +35,11 @@ public class RoomController {
         return ResponseEntity.ok(roomService.getRoomById(id));
     }
 
+    @PostMapping("/avaible")
+    public ResponseEntity<List<RoomDTO>> getRoomsAvaible(@Valid @RequestBody RoomReservationRequest roomReservationRequest){
+        return ResponseEntity.ok(roomService.getRoomsAvaible(roomReservationRequest));
+    }
+
     @GetMapping("/number/{number}/floor/{floor}")
     public ResponseEntity<RoomDTO> getRoomNumberAndFloor(@PathVariable int number, @PathVariable int floor) {
         return ResponseEntity.ok(roomService.getRoomNumberAndFloor(number,floor));
@@ -49,6 +55,8 @@ public class RoomController {
         List<RoomDTO> bedrooRoomDTOs = roomService.getAllBedrooms();
         return ResponseEntity.ok(bedrooRoomDTOs);
     }
+
+   
 
     @PostMapping
     public ResponseEntity<RoomDTO> createRoom(@Valid @RequestBody RoomCreateDTO roomCreateDTO) {

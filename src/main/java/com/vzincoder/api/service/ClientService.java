@@ -83,7 +83,7 @@ public class ClientService {
 
     }
 
-    private ClientDTO convertToDTO(Client client) {
+    public ClientDTO convertToDTO(Client client) {
         ClientDTO clientDTO = new ClientDTO();
         clientDTO.setId(client.getId());
         clientDTO.setCpf(client.getCpf());

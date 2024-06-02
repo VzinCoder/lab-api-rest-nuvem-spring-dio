@@ -171,7 +171,7 @@ public class EmployeeService {
         }
     }
 
-    private EmployeeDTO convertToDTO(Employee employee, int month, int year) {
+    public EmployeeDTO convertToDTO(Employee employee, int month, int year) {
         EmployeeDTO employeeDTO = new EmployeeDTO();
         employeeDTO.setId(employee.getId());
         employeeDTO.setEmail(employee.getEmail());
@@ -181,7 +181,7 @@ public class EmployeeService {
         employeeDTO.setDate(employee.getDate());
 
         List<Reserve> reserveCheckedMonthList = employee.getReserves().stream().filter(reserve -> {
-            boolean isReserveChekedOut = reserve.getStatus().equals(ReserveStatus.CHECKED_OUT);
+            boolean isReserveChekedOut = reserve.getStatus().equals(ReserveStatus.FINALIZED);
             boolean isEqualMonth = reserve.getDateCheckIn().getMonthValue() == month;
             boolean isEqualYear = reserve.getDateCheckIn().getYear() == year;
             if (isReserveChekedOut && isEqualYear && isEqualMonth) {
