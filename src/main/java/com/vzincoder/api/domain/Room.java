@@ -1,9 +1,13 @@
 package com.vzincoder.api.domain;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
@@ -28,6 +32,9 @@ public class Room {
     
     @NotNull
     private String describe;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE)
+    private List<Reserve> reserve;
 
     public int getId() {
         return id;

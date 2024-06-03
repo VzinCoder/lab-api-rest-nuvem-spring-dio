@@ -1,12 +1,15 @@
 package com.vzincoder.api.domain;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -24,6 +27,9 @@ public class Client {
     @NotNull
     @Column(unique = true, length = 11)
     private String cpf;
+
+    @OneToMany(mappedBy = "client", cascade = CascadeType.REMOVE)
+    private List<Reserve> reserve;
 
     @NotNull
     private LocalDate dateOfBirth;

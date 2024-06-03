@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -31,6 +32,10 @@ public class Employee extends UserAbstract {
 
     @OneToMany(fetch = FetchType.LAZY)
     private List<Reserve> reserves = new ArrayList<>();
+
+    
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.REMOVE)
+    private List<Reserve> reserve;
 
     public LocalDate getDate() {
         return date;
