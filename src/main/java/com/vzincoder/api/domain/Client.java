@@ -28,7 +28,7 @@ public class Client {
     @Column(unique = true, length = 11)
     private String cpf;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.REMOVE)
+    @OneToMany( cascade = CascadeType.REMOVE, mappedBy = "client")
     private List<Reserve> reserve;
 
     @NotNull

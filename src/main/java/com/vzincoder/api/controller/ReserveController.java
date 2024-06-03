@@ -72,7 +72,7 @@ public class ReserveController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<MessageResponseDTO> deleteReserve(int id){
+    public ResponseEntity<MessageResponseDTO> deleteReserve(@PathVariable int id){
         reserveService.deleteReserve(id);
         return ResponseEntity.ok(new MessageResponseDTO("Reserve with ID " + id + " deleted successfully"));
     }

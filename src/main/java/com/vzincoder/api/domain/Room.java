@@ -33,7 +33,7 @@ public class Room {
     @NotNull
     private String describe;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE)
+    @OneToMany( mappedBy = "room",cascade = CascadeType.REMOVE)
     private List<Reserve> reserve;
 
     public int getId() {
